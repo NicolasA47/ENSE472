@@ -1,4 +1,4 @@
-from twisted.internet import reactor, protocol, endpoints
+from twisted.internet import reactor, protocol, endpoints, ssl
 
 class Server(protocol.Protocol):
     def __init__ (self, users):
@@ -45,5 +45,7 @@ class ServerFactory (protocol.ServerFactory):
         return Server(self.users)
 
 if __name__ == "__main__":
-    reactor.listenTCP(1234, ServerFactory())
+    factory = ServerFactory()
+    certificate = ssl.PrivateCertificate.loadPEM(open("cert.pem").read() + open("key.pem").read())
+    reactor.listenSSL(1234, factory, certificate.options())
     reactor.run()

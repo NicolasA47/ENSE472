@@ -1,4 +1,4 @@
-from twisted.internet import reactor, protocol, endpoints
+from twisted.internet import reactor, protocol, endpoints, ssl
 
 class Client(protocol.Protocol):
     def __init__(self):
@@ -21,5 +21,8 @@ class ClientFactory(protocol.ClientFactory):
         return Client()
 
 if __name__ == "__main__":
-    reactor.connectTCP("localhost", 1234, ClientFactory())
+    factory = ClientFactory()
+    reactor.connectSSL("localhost", 1234, factory, ssl.ClientContextFactory())
     reactor.run()
+
+
